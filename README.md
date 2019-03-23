@@ -32,41 +32,75 @@ BuildVersion:	17G4015
 bundle install
 ```
 
+### Directory Structure
+
+|path|description|
+|:-:|:-:|
+|lib/ok_class.rb|ok test target|
+|lib/ng_class.rb|ng test target|
+|lib/ok_class_rewritten.rb|rewritten ok test target generated using --debug option|
+|lib/ng_class_rewritten.rb|rewritten ng test target generated using --debug option|
+|spec/ok_class_spec.rb|test for ok target|
+|spec/ng_class_spec.rb|test for ng target|
+|spec/ok_class_rewritten_spec.rb|test for rewritten ok target|
+|spec/ng_class_rewritten_spec.rb|test for rewritten ng target|
+
 ### Bug reproduction
 
-#### rspec without deep cover
+#### rspec original without deep cover
 
 ```bash
-DEEP_COVER_REQUIRE=0 bundle exec rspec
+DEEP_COVER_REQUIRE=0 bundle exec rspec spec/ng_class_spec.rb
 ```
 
 -> will pass
 
-#### rspec requiring deep-cover but without deep-cover exec
+#### rspec original requiring deep-cover but without deep-cover exec
 
 ```bash
-DEEP_COVER_REQUIRE=1 bundle exec rspec
+DEEP_COVER_REQUIRE=1 bundle exec rspec spec/ng_class_spec.rb
 ```
 
 -> will pass
 
-#### rspec not requiring deep-cover but with deep-cover exec
+#### rspec original not requiring deep-cover but with deep-cover exec
 
 
 ```bash
-DEEP_COVER_REQUIRE=0 bundle exec deep-cover exec rspec
+DEEP_COVER_REQUIRE=0 bundle exec deep-cover exec rspec spec/ng_class_spec.rb
 ```
 
 -> will pass
 
-#### rspec with deep-cover
+#### rspec original with deep-cover
 
 
 ```bash
-DEEP_COVER_REQUIRE=1 bundle exec deep-cover exec rspec
+DEEP_COVER_REQUIRE=1 bundle exec deep-cover exec rspec spec/ng_class_spec.rb
 ```
 
 -> will fail
+
+#### rspec rewritten without deep-cover
+
+
+```bash
+DEEP_COVER_REQUIRE=0 bundle exec rspec spec/ng_class_rewritten_spec.rb
+```
+
+-> will fail
+
+#### OkClass is not broken
+
+```bash
+DEEP_COVER_REQUIRE=0 bundle exec rspec spec/ok_class_spec.rb
+DEEP_COVER_REQUIRE=1 bundle exec rspec spec/ok_class_spec.rb
+DEEP_COVER_REQUIRE=0 bundle exec deep-cover exec rspec spec/ok_class_spec.rb
+DEEP_COVER_REQUIRE=1 bundle exec deep-cover exec rspec spec/ok_class_spec.rb
+DEEP_COVER_REQUIRE=0 bundle exec rspec spec/ok_class_rewritten_spec.rb
+```
+
+-> will pass
 
 ## debug
 
